@@ -1,98 +1,61 @@
-use serde::{Serialize, Deserialize};
-use yaserde_derive::{YaSerialize, YaDeserialize};
-
-/// "Structure" section
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "Structure")]
+use super::geometry::{Geometries, Geometry};
+use serde::{Deserialize, Serialize};
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
 pub struct Structure {
-    #[yaserde(child, rename = "Geometry")]
-    pub geometries: Vec<GeometryNodeType>,
+    pub geometry: Geometry,
 }
 
-/// "GeometryNodeType" element
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "Geometry")]
-pub struct GeometryNodeType {
-    #[yaserde(attribute, rename = "partName")]
-    pub part_name: String,
-    #[yaserde(child, rename = "Position")]
-    pub position: VectorType,
-
-    #[yaserde(child, rename = "Rotation")]
-    pub rotation: VectorType,
-
-    #[yaserde(child, rename = "GeometryReference")]
-    pub geometry_reference: GeometryReference,
-
-    #[yaserde(child, rename = "LightEmittingObjects")]
-    pub light_emitting_objects: Option<LightEmittingObjects>, // Optional, as it might not always be present
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Axis {
+    #[serde(rename = "@min")]
+    min: f64,
+    #[serde(rename = "@max")]
+    max: f64,
+    #[serde(rename = "@step")]
+    step: f64,
 }
 
-/// VectorType used in GeometryNodeType
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "VectorType")]
-pub struct VectorType {
-    #[yaserde(attribute, rename = "x")]
-    pub x: f64,
-
-    #[yaserde(attribute, rename = "y")]
-    pub y: f64,
-
-    #[yaserde(attribute, rename = "z")]
-    pub z: f64,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Vec3f {
+    #[serde(rename = "@x")]
+    pub x: f32,
+    #[serde(rename = "@y")]
+    pub y: f32,
+    #[serde(rename = "@z")]
+    pub z: f32,
 }
 
-/// GeometryReference element
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "GeometryReference")]
-pub struct GeometryReference {
-    #[yaserde(attribute, rename = "geometryId")]
-    pub geometry_id: String,
-}
-
-/// LightEmittingObjects container (optional in XSD)
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "LightEmittingObjects")]
-pub struct LightEmittingObjects {
-    #[yaserde(child, rename = "LightEmittingObject")]
-    pub light_emitting_object: Vec<LightEmittingObject>,  // Can have multiple LightEmittingObjects
-}
-
-/// LightEmittingObject element
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "LightEmittingObject")]
-pub struct LightEmittingObject {
-    #[yaserde(attribute, rename = "partName")]
-    pub part_name: String,  // Attribute "partName" in XSD
-
-    #[yaserde(child, rename = "Position")]
-    pub position: VectorType,  // Reuse the existing VectorType for Position
-
-    #[yaserde(child, rename = "Rotation")]
-    pub rotation: VectorType,  // Reuse the existing VectorType for Rotation
-
-    #[yaserde(child, rename = "Circle")]
-    pub circle: Option<Circle>,  // Optional Circle, as defined in the XSD
-
-    #[yaserde(child, rename = "Rectangle")]
-    pub rectangle: Option<Rectangle>,  // Optional Rectangle, as defined in the XSD
-}
-
-/// Circle element (used in LightEmittingObject)
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "Circle")]
-pub struct Circle {
-    #[yaserde(attribute, rename = "diameter")]
-    pub diameter: f64,
-}
-
-/// Rectangle element (used in LightEmittingObject)
-#[derive(Debug, Clone, Default, PartialEq, YaSerialize, YaDeserialize, Serialize, Deserialize)]
-#[yaserde(rename = "Rectangle")]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Rectangle {
-    #[yaserde(attribute, rename = "sizeX")]
-    pub size_x: f64,
+    #[serde(rename = "@sizeX")]
+    size_x: f64,
+    #[serde(rename = "@sizeY")]
+    size_y: f64,
+}
 
-    #[yaserde(attribute, rename = "sizeY")]
-    pub size_y: f64,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Circle {
+    #[serde(rename = "@diameter")]
+    diameter: f64,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Joints {
+    pub joint: Vec<Joint>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Joint {
+    #[serde(rename = "@partName")]
+    pub part_name: String,
+    pub position: Vec3f,
+    pub rotation: Vec3f,
+    pub x_axis: Option<Axis>,
+    pub y_axis: Option<Axis>,
+    pub z_axis: Option<Axis>,
+    pub default_rotation: Option<Vec3f>,
+    pub geometries: Geometries,
 }

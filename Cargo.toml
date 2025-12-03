@@ -1,28 +1,36 @@
 [package]
 name = "l3d_rs"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
-authors = ["Holger Trahe<trahe@mac.com>"]
-documentation = "https://docs.rs/l3d-rs/"
-description = "L3d (Luminaire 3D (XML Format)) parser and writer for Rust, specifically for the Rust/WASM target as such designed for JSON format"
-repository = "https://github.com/holg/l3d-rs"
-homepage = "https://github.com/holg/l3d-rs"
+rust-version = "1.70"
+authors = ["Holger Trahe <trahe@mac.com>"]
+description = "L3D (Luminaire 3D) file parser for Rust - parse 3D luminaire geometry with transformation matrices, designed for WASM/WebGL rendering"
+documentation = "https://docs.rs/l3d_rs/"
+repository = "https://github.com/holg/l3d_rs"
+homepage = "https://github.com/holg/l3d_rs"
 license = "GPL-3.0-or-later"
+readme = "README.md"
+keywords = ["l3d", "gldf", "lighting", "3d", "luminaire"]
+categories = ["parsing", "graphics", "wasm"]
+exclude = [
+    "tests/data/*",
+    ".idea/*",
+    ".github/*",
+]
 
 [dependencies]
-#yaserde = {version = "0.8"}
-# we do need our own branch anymore, as now we use the one from yaserde
-#yaserde = {path = "../yaserde/yaserde"} #, branch="gldf"}
-yaserde = {version="0.8", git = "https://github.com/holg/yaserde/", branch="gldf"}
-#yaserde_derive = {path = "../yaserde/yaserde_derive"} #, branch="gldf"}
-yaserde_derive = {version = "0.8", git = "https://github.com/holg/yaserde/", branch="gldf"}
 serde = { version = "1.0", features = ["derive"] }
-serde_json = {version = "1.0"}
-zip = {version="2.2", features = ["deflate", "time"], default-features = false}
-anyhow = {version = "1.0"}
-regex = "1.11.0"
+serde_json = "1.0"
+zip = { version = "2", features = ["deflate"], default-features = false }
+anyhow = "1.0"
+regex = "1"
+quick-xml = { version = "0.37", features = ["serialize"] }
 
 [lib]
 name = "l3d_rs"
 path = "src/lib.rs"
 crate-type = ["cdylib", "rlib"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

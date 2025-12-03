@@ -1,34 +1,58 @@
-use crate::l3d::{Luminaire};
+use crate::from_buffer;
+use crate::l3d::Luminaire;
+
 #[test]
-fn test_l3d_raw_xml_vs_to_xml() {
-    // Path to the .l3d file (which is XML format)
+fn test_l3d_load_and_json_roundtrip() {
+    // Path to the .l3d file (which contains XML format internally)
     let file_path = "tests/data/recessed_round.l3d";
+
     // Load and deserialize the .l3d file into Luminaire
     let loaded = Luminaire::load_l3d(file_path).expect("Failed to load L3D file");
-    // Reserialize the Luminaire struct back into XML
-    let loaded_to_xml = loaded.to_xml().expect("Failed to serialize to XML");
-    let raw_xml = Luminaire::get_xml_str_from_l3d(file_path.into()).expect("Failed to load L3D structure.xml file");
-    // Compare the raw XML and generated XML
-    if let Err(err) = Luminaire::compare_xml(&raw_xml, &loaded_to_xml) {
-        panic!("{}", err);  // This will panic with the two XML strings for easy comparison in IDE
-    }
-}
-#[test]
-fn test_l3d_json_vs_to_xml() {
-    // Path to the .l3d file (which is XML format)
-    let file_path = "tests/data/recessed_round.l3d";
-    // Load and deserialize the .l3d file into Luminaire
-    let loaded = Luminaire::load_l3d(file_path).expect("Failed to load L3D file");
-    // Reserialize the Luminaire struct back into XML
-    let loaded_to_xml = loaded.to_xml().expect("Failed to serialize to XML");
+
+    // Serialize to JSON
     let json_data = loaded.to_json().expect("Failed to serialize to JSON");
 
-    // Step 6: Deserialize the JSON back into the Rust struct
-    let luminaire_from_json: Luminaire = Luminaire::from_json(&json_data).expect("Failed to deserialize from JSON");
+    // Deserialize the JSON back into the Rust struct
+    let luminaire_from_json: Luminaire =
+        Luminaire::from_json(&json_data).expect("Failed to deserialize from JSON");
 
-    // Step 7: Serialize the Luminaire struct (from JSON) back to XML
-    let xml_from_json = Luminaire::to_xml(&luminaire_from_json).expect("Failed to serialize to XML");
-    if let Err(err) = Luminaire::compare_xml(&xml_from_json, &loaded_to_xml) {
-        panic!("{}", err);  // This will panic with the two XML strings for easy comparison in IDE
-    }
+    // Serialize again to JSON and compare
+    let json_data_roundtrip = luminaire_from_json
+        .to_json()
+        .expect("Failed to serialize to JSON");
+
+    assert_eq!(json_data, json_data_roundtrip, "JSON roundtrip failed");
+}
+
+#[test]
+fn test_from_buffer_parses_model() {
+    // Load the L3D file as bytes
+    let file_path = "tests/data/recessed_round.l3d";
+    let l3d_bytes = std::fs::read(file_path).expect("Failed to read L3D file");
+
+    // Parse using from_buffer
+    let l3d = from_buffer(&l3d_bytes);
+
+    // Verify structure.xml was parsed
+    assert!(
+        !l3d.file.structure.is_empty(),
+        "structure.xml should not be empty"
+    );
+
+    // Verify model parts were created
+    assert!(
+        !l3d.model.parts.is_empty(),
+        "Model should have at least one part"
+    );
+
+    // Verify first part has a valid path
+    let first_part = &l3d.model.parts[0];
+    assert!(!first_part.path.is_empty(), "Part should have a path");
+    assert!(
+        first_part.path.ends_with(".obj"),
+        "Part path should end with .obj"
+    );
+
+    // Verify assets were loaded
+    assert!(!l3d.file.assets.is_empty(), "Should have asset files");
 }
