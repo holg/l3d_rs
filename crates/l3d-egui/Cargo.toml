@@ -8,7 +8,7 @@ repository = "https://github.com/holg/l3d-rs"
 homepage = "https://github.com/holg/l3d-rs"
 license = "GPL-3.0-or-later"
 readme = "README.md"
-keywords = ["l3d", "3d", "viewer", "lighting", "wasm", "gldf"]
+keywords = ["l3d", "gldf", "viewer", "lighting", "wasm"]
 categories = ["graphics", "rendering", "visualization"]
 
 # Native dependencies
