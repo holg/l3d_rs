@@ -1,0 +1,30 @@
+[package]
+name = "l3d-ffi"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version = "1.70"
+description = "UniFFI bindings for l3d_rs - for Android (Kotlin), iOS (Swift), and more"
+documentation = "https://docs.rs/l3d-ffi"
+repository = "https://github.com/holg/l3d-rs"
+homepage = "https://github.com/holg/l3d-rs"
+license = "MIT OR GPL-3.0-or-later"
+readme = "README.md"
+keywords = ["l3d", "ffi", "uniffi", "android", "ios"]
+categories = ["api-bindings", "development-tools::ffi"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[lib]
+name = "l3d_ffi"
+crate-type = ["lib", "staticlib", "cdylib"]
+
+[dependencies]
+l3d_rs = { version = "0.2.1", path = "../l3d_rs" }
+thiserror = "2"
+uniffi = "0.29"
+
+[build-dependencies]
+uniffi = { version = "0.29", features = ["build"] }

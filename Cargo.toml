@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/l3d-egui", "crates/l3d-python", "crates/l3d_rs"]
+members = ["crates/l3d-egui", "crates/l3d-ffi", "crates/l3d-python", "crates/l3d_rs"]
 
 [workspace.package]
 version = "0.2.1"

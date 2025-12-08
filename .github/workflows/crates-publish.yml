@@ -41,6 +41,36 @@ jobs:
             fi
           }
 
+  # Publish l3d-ffi (UniFFI bindings) after l3d_rs
+  publish-ffi:
+    name: Publish l3d-ffi
+    runs-on: ubuntu-latest
+    needs: publish-lib
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Wait for crates.io index update
+        run: sleep 60
+
+      - name: Verify build (local workspace)
+        run: cargo build --release -p l3d-ffi
+
+      - name: Publish l3d-ffi to crates.io
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          cargo publish -p l3d-ffi --allow-dirty --no-verify 2>&1 | tee publish.log || {
+            if grep -q "already uploaded" publish.log; then
+              echo "Already published, continuing..."
+            else
+              cat publish.log
+              exit 1
+            fi
+          }
+
   # Publish l3d-egui (desktop/WASM viewer) after l3d_rs
   publish-egui:
     name: Publish l3d-egui
