@@ -4,15 +4,10 @@ name: Python CI
 
 on:
   push:
-    branches:
-      - main
-      - master
+    # Tags always trigger (no path filter for releases)
     tags:
       - 'v*'
       - '[0-9]+.[0-9]+.[0-9]+'
-    paths:
-      - 'crates/l3d-python/**'
-      - 'crates/l3d_rs/**'
   pull_request:
     paths:
       - 'crates/l3d-python/**'

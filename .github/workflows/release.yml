@@ -126,10 +126,17 @@ jobs:
         run: |
           mkdir -p release-assets
 
-          # l3d-viewer binaries
-          for dir in artifacts/l3d-viewer-*/; do
-            cp "$dir"/* release-assets/ 2>/dev/null || true
+          # l3d-viewer native binaries
+          for dir in artifacts/l3d-viewer-x86_64-unknown-linux-gnu artifacts/l3d-viewer-x86_64-apple-darwin artifacts/l3d-viewer-aarch64-apple-darwin artifacts/l3d-viewer-x86_64-pc-windows-msvc; do
+            if [ -d "$dir" ]; then
+              cp "$dir"/* release-assets/ 2>/dev/null || true
+            fi
           done
+
+          # l3d-viewer WASM
+          if [ -d "artifacts/l3d-viewer-wasm" ]; then
+            cp artifacts/l3d-viewer-wasm/*.zip release-assets/ 2>/dev/null || true
+          fi
 
           ls -la release-assets/
 
@@ -140,3 +147,24 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: false
+          body: |
+            ## Downloads
+
+            ### l3d-viewer (Native Desktop App)
+            | Platform | Download |
+            |----------|----------|
+            | Linux x86_64 | `l3d-viewer-linux-x86_64` |
+            | macOS x86_64 | `l3d-viewer-macos-x86_64` |
+            | macOS ARM64 | `l3d-viewer-macos-aarch64` |
+            | Windows x86_64 | `l3d-viewer-windows-x86_64.exe` |
+
+            ### l3d-viewer (WebAssembly)
+            | Platform | Download |
+            |----------|----------|
+            | WASM | `l3d-viewer-wasm.zip` |
+
+            ### Python Package
+            Install from PyPI: `pip install l3d-rs-python`
+
+            ### Rust Crate
+            Add to Cargo.toml: `l3d_rs = "0.2"`
