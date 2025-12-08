@@ -136,7 +136,7 @@ pub const MAT4_IDENTITY: Mat4 = [
 ///     // Apply transform to model...
 /// }
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct L3dPart {
     /// Path to the geometry file (e.g., "geom_1/luminaire.obj")
     pub path: String,
@@ -161,7 +161,7 @@ pub struct L3dPart {
 ///     println!("  - {}", part.path);
 /// }
 /// ```
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct L3dModel {
     /// List of geometry parts with their transformations
     pub parts: Vec<L3dPart>,
@@ -186,7 +186,7 @@ pub struct L3dModel {
 ///     raw
 /// }
 /// ```
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct BufFile {
     /// File name/path within the archive (e.g., "geom_1/luminaire.obj")
     pub name: String,
@@ -204,7 +204,7 @@ pub struct BufFile {
 ///
 /// - `structure` - The raw XML content from `structure.xml`
 /// - `assets` - All other files (OBJ, MTL, textures, etc.)
-#[derive(Clone, Debug, Default)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct L3dFile {
     /// Raw XML content from structure.xml
     pub structure: String,
@@ -244,7 +244,7 @@ pub struct L3dFile {
 ///     println!("Render {} with matrix {:?}", part.path, part.mat);
 /// }
 /// ```
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct L3d {
     /// Raw file contents (structure.xml and assets)
     pub file: L3dFile,

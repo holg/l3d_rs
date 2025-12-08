@@ -324,7 +324,7 @@ pub fn remove_xml_declaration(xml: &str) -> String {
     xml.replace(r#"<?xml version="1.0" encoding="utf-8"?>"#, "")
 }
 
-/// Remove specific empty optional elements like <Name/>
+/// Remove specific empty optional elements like `<Name/>`
 fn remove_specific_empty_elements(xml: &str) -> String {
     // Remove empty <Name/> element
     let re_name = Regex::new(r"<Name\s*/>").unwrap(); // Matches <Name/>

@@ -1,13 +1,13 @@
 use crate::from_buffer;
 use crate::l3d::Luminaire;
 
+/// Minimal L3D test file included in the repository
+const TEST_L3D_PATH: &str = "tests/data/minimal.l3d";
+
 #[test]
 fn test_l3d_load_and_json_roundtrip() {
-    // Path to the .l3d file (which contains XML format internally)
-    let file_path = "tests/data/recessed_round.l3d";
-
     // Load and deserialize the .l3d file into Luminaire
-    let loaded = Luminaire::load_l3d(file_path).expect("Failed to load L3D file");
+    let loaded = Luminaire::load_l3d(TEST_L3D_PATH).expect("Failed to load L3D file");
 
     // Serialize to JSON
     let json_data = loaded.to_json().expect("Failed to serialize to JSON");
@@ -27,8 +27,7 @@ fn test_l3d_load_and_json_roundtrip() {
 #[test]
 fn test_from_buffer_parses_model() {
     // Load the L3D file as bytes
-    let file_path = "tests/data/recessed_round.l3d";
-    let l3d_bytes = std::fs::read(file_path).expect("Failed to read L3D file");
+    let l3d_bytes = std::fs::read(TEST_L3D_PATH).expect("Failed to read L3D file");
 
     // Parse using from_buffer
     let l3d = from_buffer(&l3d_bytes);

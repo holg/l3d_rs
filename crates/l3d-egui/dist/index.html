@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L3D 3D Viewer</title>
+    
+<script type="module">
+import init, * as bindings from '/l3d-egui-e5fa78ebbde566a0.js';
+const wasm = await init({ module_or_path: '/l3d-egui-e5fa78ebbde566a0_bg.wasm' });
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #262635;
+        }
+        #drop-hint {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: system-ui, sans-serif;
+            font-size: 14px;
+            z-index: 100;
+            pointer-events: none;
+        }
+        #drop-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(233, 69, 96, 0.15);
+            border: 4px dashed #e94560;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 99;
+            pointer-events: none;
+        }
+        #drop-overlay.active { display: flex; }
+        #drop-overlay span {
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            padding: 20px 40px;
+            border-radius: 8px;
+            font-family: system-ui, sans-serif;
+            font-size: 18px;
+        }
+        canvas { display: block; }
+        #file-input { display: none; }
+    </style>
+<link rel="modulepreload" href="/l3d-egui-e5fa78ebbde566a0.js" crossorigin="anonymous" integrity="sha384-781LfGs8omrSv8r1UnXTGnYIuoNBv9EloE3ut4bYamwFCMYzg15EfR2CeeztVumq"><link rel="preload" href="/l3d-egui-e5fa78ebbde566a0_bg.wasm" crossorigin="anonymous" integrity="sha384-TKN9TUX5JMRow/sEfl64yfs4YGa9iIfT1tbCCux0PK5R1RimXGm74M+wZZ+HzOF4" as="fetch" type="application/wasm"></head>
+<body>
+    <canvas id="canvas" style="width:100%;height:100%"></canvas>
+    <div id="drop-hint">Drop L3D file or <a href="#" id="select-link" style="color:#e94560;pointer-events:auto;cursor:pointer">click to select</a></div>
+    <div id="drop-overlay"><span>Drop L3D file here</span></div>
+    <input type="file" id="file-input" accept=".l3d" />
+
+    <script>
+        // Wait for trunk to load WASM
+        window.addEventListener('TrunkApplicationStarted', () => {
+            console.log('WASM loaded by trunk');
+
+            const bindings = window.wasmBindings;
+            const dropHint = document.getElementById('drop-hint');
+            const dropOverlay = document.getElementById('drop-overlay');
+            const fileInput = document.getElementById('file-input');
+            const selectLink = document.getElementById('select-link');
+
+            async function handleFile(file) {
+                console.log('Loading file:', file.name, file.size, 'bytes');
+                dropHint.textContent = 'Loading ' + file.name + '...';
+
+                const data = new Uint8Array(await file.arrayBuffer());
+                bindings.queue_l3d_data(data);
+
+                dropHint.textContent = 'Loaded: ' + file.name + ' - Drop another to replace';
+            }
+
+            // File selection
+            selectLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files[0]) handleFile(e.target.files[0]);
+            });
+
+            // Drag & drop
+            let dragCounter = 0;
+
+            document.body.addEventListener('dragenter', (e) => {
+                e.preventDefault();
+                dragCounter++;
+                dropOverlay.classList.add('active');
+            });
+
+            document.body.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dragCounter--;
+                if (dragCounter === 0) dropOverlay.classList.remove('active');
+            });
+
+            document.body.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            document.body.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dragCounter = 0;
+                dropOverlay.classList.remove('active');
+
+                const file = e.dataTransfer.files[0];
+                if (file && file.name.toLowerCase().endsWith('.l3d')) {
+                    handleFile(file);
+                } else {
+                    dropHint.textContent = 'Please drop an .l3d file';
+                }
+            });
+
+            // Start the 3D viewer
+            console.log('Starting viewer...');
+            bindings.start_viewer_wasm();
+        });
+    </script>
+</body>
+</html>
