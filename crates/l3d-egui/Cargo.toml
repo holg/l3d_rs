@@ -46,7 +46,7 @@ web-sys = { version = "0.3", features = [
 ] }
 
 [dependencies]
-l3d_rs = { path = "../l3d_rs" }
+l3d_rs = { version = "0.2.1", path = "../l3d_rs" }
 log.workspace = true
 three-d.workspace = true
 three-d-asset.workspace = true
