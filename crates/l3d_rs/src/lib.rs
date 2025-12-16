@@ -105,6 +105,7 @@ pub use l3d::{
     mat4_scale,
     mat4_translation,
     BufFile,
+    Circle,
     Geometries,
     Geometry,
     GeometryDefinitions,
@@ -117,9 +118,13 @@ pub use l3d::{
     L3dFile,
     L3dModel,
     L3dPart,
+    // Light emitting objects
+    LightEmittingObject,
+    LightEmittingObjects,
     // XML structure types
     Luminaire,
     Mat4,
+    Rectangle,
     Structure,
     Vec3f,
     MAT4_IDENTITY,

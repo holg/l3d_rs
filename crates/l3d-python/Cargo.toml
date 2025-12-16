@@ -10,6 +10,6 @@ name = "l3d"
 crate-type = ["cdylib"]
 
 [dependencies]
-l3d_rs = { version = "0.2.1", path = "../l3d_rs" }
+l3d_rs = { version = "0.2.3", path = "../l3d_rs" }
 pyo3.workspace = true
 serde_json.workspace = true

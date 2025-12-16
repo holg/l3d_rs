@@ -21,10 +21,15 @@ rustdoc-args = ["--cfg", "docsrs"]
 name = "l3d_ffi"
 crate-type = ["lib", "staticlib", "cdylib"]
 
+[[bin]]
+name = "uniffi-bindgen"
+path = "uniffi-bindgen.rs"
+
 [dependencies]
-l3d_rs = { version = "0.2.1", path = "../l3d_rs" }
+l3d_rs = { version = "0.2.3", path = "../l3d_rs" }
+serde_json = "1"
 thiserror = "2"
-uniffi = "0.29"
+uniffi = { version = "0.30", features = ["cli"] }
 
 [build-dependencies]
-uniffi = { version = "0.29", features = ["build"] }
+uniffi = { version = "0.30", features = ["build"] }

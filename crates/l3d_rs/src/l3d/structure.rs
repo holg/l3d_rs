@@ -28,16 +28,33 @@ pub struct Vec3f {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Rectangle {
+    /// Width of the rectangle
     #[serde(rename = "@sizeX")]
-    size_x: f64,
+    pub size_x: f64,
+    /// Height of the rectangle
     #[serde(rename = "@sizeY")]
-    size_y: f64,
+    pub size_y: f64,
+}
+
+impl Rectangle {
+    /// Get rectangle dimensions (width, height) in meters
+    pub fn size(&self) -> (f64, f64) {
+        (self.size_x, self.size_y)
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Circle {
+    /// Diameter of the circle
     #[serde(rename = "@diameter")]
-    diameter: f64,
+    pub diameter: f64,
+}
+
+impl Circle {
+    /// Get circle diameter in meters
+    pub fn diameter(&self) -> f64 {
+        self.diameter
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

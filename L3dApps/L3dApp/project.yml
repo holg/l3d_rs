@@ -1,0 +1,43 @@
+name: L3dViewer
+options:
+  bundleIdPrefix: eu.trahe
+  deploymentTarget:
+    iOS: "16.0"
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+
+packages:
+  L3dKit:
+    path: ../SPM-L3dKit
+
+targets:
+  L3dViewer:
+    type: application
+    platform: [macOS, iOS]
+    sources:
+      - L3dApp
+    dependencies:
+      - package: L3dKit
+    settings:
+      base:
+        PRODUCT_NAME: L3D Viewer
+        PRODUCT_BUNDLE_IDENTIFIER: eu.trahe.l3dview
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_KEY_CFBundleDisplayName: L3D Viewer
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.graphics-design
+        GENERATE_INFOPLIST_FILE: YES
+        SWIFT_VERSION: "5.9"
+        ENABLE_HARDENED_RUNTIME: YES
+        CODE_SIGN_ENTITLEMENTS: ""
+      configs:
+        Debug:
+          CODE_SIGN_IDENTITY: "-"
+          CODE_SIGN_STYLE: Automatic
+        Release:
+          CODE_SIGN_STYLE: Automatic
+    entitlements:
+      path: L3dViewer.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-only: true

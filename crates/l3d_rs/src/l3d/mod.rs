@@ -35,7 +35,8 @@ use serde::{Deserialize, Serialize};
 
 pub use geometry::{Geometries, Geometry, GeometryDefinitions, GeometryFileDefinition};
 pub use header::Header;
-pub use structure::{Joint, Joints, Structure, Vec3f};
+pub use lightemitting::{LightEmittingObject, LightEmittingObjects};
+pub use structure::{Circle, Joint, Joints, Rectangle, Structure, Vec3f};
 
 /// Root element representing a complete luminaire definition
 ///
